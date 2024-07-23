@@ -6,9 +6,9 @@ import pickle
 
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 
-chessboardSize = (8, 4)
+chessboardSize = (9, 6)
 frameSize = (1440, 1080)
-size_of_chessboard_squares_mm = 17
+size_of_chessboard_squares_mm = 20
 
 
 # termination criteria
@@ -28,13 +28,6 @@ imgpoints = []  # 2d points in image plane.
 
 
 images = glob.glob("./chess_board/*.png")
-print(images)
-for image in images:
-    img = cv.imread(image)
-    cv.namedWindow("pic", cv.WINDOW_NORMAL)
-    cv.imshow("pic", img)
-    cv.waitKey(0)
-
 for image in images:
 
     img = cv.imread(image)
@@ -75,7 +68,7 @@ pickle.dump(dist, open("dist.pkl", "wb"))
 
 ############## UNDISTORTION #####################################################
 
-img = cv.imread("cali5.png")
+img = cv.imread("./images/target.png")
 h, w = img.shape[:2]
 newCameraMatrix, roi = cv.getOptimalNewCameraMatrix(
     cameraMatrix, dist, (w, h), 1, (w, h)
@@ -88,7 +81,7 @@ dst = cv.undistort(img, cameraMatrix, dist, None, newCameraMatrix)
 # crop the image
 x, y, w, h = roi
 dst = dst[y : y + h, x : x + w]
-cv.imwrite("caliResult1.png", dst)
+cv.imwrite("./images/result_undistort.png", dst)
 
 
 # Undistort with Remapping
@@ -100,7 +93,7 @@ dst = cv.remap(img, mapx, mapy, cv.INTER_LINEAR)
 # crop the image
 x, y, w, h = roi
 dst = dst[y : y + h, x : x + w]
-cv.imwrite("caliResult2.png", dst)
+cv.imwrite("./images/result_undistort_remapping.png", dst)
 
 
 # Reprojection Error
