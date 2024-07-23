@@ -1,0 +1,5 @@
+4 yada 8 mm
+
+
+remapping-undistortion
+basic method cv2.undistort(params)
