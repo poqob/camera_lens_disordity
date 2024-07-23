@@ -3,14 +3,21 @@ import cv2 as cv
 import glob
 import pickle
 
+"""
+This script is used to calibrate the camera and undistort the images.
+"""
+
 
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 
-chessboardSize = (9, 6)
-frameSize = (1440, 1080)
-size_of_chessboard_squares_mm = 20
-
-
+chessboardSize = (9, 6)  # @param: chessboard size (count of black and white squares)
+frameSize = (1440, 1080)  # @param: frame size (width, height)
+size_of_chessboard_squares_mm = (
+    20  # @param: size of chessboard squares in mm (real world size)
+)
+"""
+the termination criteria is set to 30 iterations and epsilon = 0.001 (error threshold)
+"""
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
@@ -27,17 +34,18 @@ objpoints = []  # 3d point in real world space
 imgpoints = []  # 2d points in image plane.
 
 
-images = glob.glob("./chess_board/*.png")
+images = glob.glob(
+    "./chess_board/*.png"
+)  # @param: path to chessboard images (png format-supported): more images, better calibration
 for image in images:
 
     img = cv.imread(image)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
     # Find the chess board corners
-    ret, corners = cv.findChessboardCorners(
-        gray, chessboardSize, None
-    )  # PROBLEM FALSE NONE
-    print(ret, corners)
+    ret, corners = cv.findChessboardCorners(gray, chessboardSize, None)
+
+    # print(ret, corners)
     # If found, add object points, image points (after refining them)
     if ret == True:
 
@@ -61,9 +69,9 @@ ret, cameraMatrix, dist, rvecs, tvecs = cv.calibrateCamera(
 )
 
 # Save the camera calibration result for later use (we won't worry about rvecs / tvecs)
-pickle.dump((cameraMatrix, dist), open("calibration.pkl", "wb"))
-pickle.dump(cameraMatrix, open("cameraMatrix.pkl", "wb"))
-pickle.dump(dist, open("dist.pkl", "wb"))
+pickle.dump((cameraMatrix, dist), open("./calibration/calibration.pkl", "wb"))
+pickle.dump(cameraMatrix, open("./calibration/cameraMatrix.pkl", "wb"))
+pickle.dump(dist, open("./calibration/dist.pkl", "wb"))
 
 
 ############## UNDISTORTION #####################################################
