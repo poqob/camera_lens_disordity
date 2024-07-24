@@ -82,7 +82,15 @@ newCameraMatrix, roi = cv.getOptimalNewCameraMatrix(
     cameraMatrix, dist, (w, h), 1, (w, h)
 )
 
+"""
+The classical way to undistort the image is to use cv.undistort() function directly applies 
+the parameters to the original image (one process)
 
+In the other hand, initUndistortRectifyMap() creates a pixel map and re-build the image 
+using remap() function (many process)
+
+The second method is more accurate and recommended.
+"""
 # Undistort
 dst = cv.undistort(img, cameraMatrix, dist, None, newCameraMatrix)
 
